@@ -4,103 +4,89 @@
 
 package samoojacitvenoucenje;
 
-import java.awt.Button;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.GridLayout;
+import java.awt.Cursor;
+import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDropEvent;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.GroupLayout;
+import java.io.IOException;
+import javax.swing.AbstractButton;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 import javax.swing.TransferHandler;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import samoojacitvenoucenje.GUI.GridWorldCell;
+import samoojacitvenoucenje.GUI.ImageIconTargetListener;
+import samoojacitvenoucenje.GUI.TransferableIcon;
+
 
 
 /**
  * The application's main frame.
  */
-public class SamoojacitvenoUcenjeView extends FrameView {
+public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureListener {
 
+
+    
     public SamoojacitvenoUcenjeView(SingleFrameApplication app) {
         super(app);
+        initComponents();
 
         getFrame().setUndecorated(true);
         getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
-        getFrame().setTitle("seljasa");
+        getFrame().setTitle("Survivor!");
         getFrame().setVisible(true);
         
-        initComponents();
-        //gridWorldPanel.setIcon(null);
+        for(int i = 0; i < gridWorldPanel.getComponentCount(); i++)  
+            new ImageIconTargetListener((GridWorldCell)gridWorldPanel.getComponent(i), this);
+        
+        
+        dragSource = new DragSource();
+        dragSource.createDefaultDragGestureRecognizer(healthLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(foodLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(timeLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(wallLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(bombLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(waterLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(fireLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(mushroomLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(chiliLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(beerLabel, DnDConstants.ACTION_COPY, this);
+        dragSource.createDefaultDragGestureRecognizer(poisonLabel, DnDConstants.ACTION_COPY, this);
+ 
         mainPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        
-        MouseListener labelListener = (MouseListener) new DragMouseAdapter();
-        healthLabel.addMouseListener(labelListener);
-        healthLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        foodLabel.addMouseListener(labelListener);
-        foodLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        timeLabel.addMouseListener(labelListener);
-        timeLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        wallLabel.addMouseListener(labelListener);
-        wallLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        bombLabel.addMouseListener(labelListener);
-        bombLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        waterLabel.addMouseListener(labelListener);
-        waterLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        fireLabel.addMouseListener(labelListener);
-        fireLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        mushroomLabel.addMouseListener(labelListener);
-        mushroomLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        chiliLabel.addMouseListener(labelListener);
-        chiliLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        beerLabel.addMouseListener(labelListener);
-        beerLabel.setTransferHandler(new TransferHandler("icon"));
-        
-        poisonLabel.addMouseListener(labelListener);
-        poisonLabel.setTransferHandler(new TransferHandler("icon"));
-       
-        dragButton.setTransferHandler(new TransferHandler("icon"));
-        
-        
-        gridWorldPanel.setTransferHandler(new TransferHandler("icon"));
-
-
 
     }
-    
-    class DragMouseAdapter extends MouseAdapter {
-        @Override
-        public void mousePressed(MouseEvent e) {
-            JComponent c = (JComponent) e.getSource();
-            TransferHandler handler = c.getTransferHandler();
-            handler.exportAsDrag(c, e, TransferHandler.COPY);
+
+    public void dragGestureRecognized(DragGestureEvent event) {
+        Cursor cursor = null;
+        
+        JLabel label = (JLabel) event.getComponent();
+        ImageIcon icon = (ImageIcon) label.getIcon();
+
+        if (event.getDragAction() == DnDConstants.ACTION_COPY) {
+            cursor = DragSource.DefaultCopyDrop;
         }
+
+        event.startDrag(cursor, new TransferableIcon(icon));
     }
-    
-    
+
 
     @Action
     public void showAboutBox() {
@@ -110,6 +96,16 @@ public class SamoojacitvenoUcenjeView extends FrameView {
             aboutBox.setLocationRelativeTo(mainFrame);
         }
         SamoojacitvenoUcenjeApp.getApplication().show(aboutBox);
+    }
+    
+    @Action
+    public void showChangeGridworldBox() {
+        if (gridworldBox == null) {
+            JFrame mainFrame = SamoojacitvenoUcenjeApp.getApplication().getMainFrame();
+            gridworldBox = new SamoojacitvenoUcenjeGridworldBox(mainFrame, true);
+            gridworldBox.setLocationRelativeTo(mainFrame);
+        }
+        SamoojacitvenoUcenjeApp.getApplication().show(gridworldBox);
     }
 
     /** This method is called from within the constructor to
@@ -135,10 +131,11 @@ public class SamoojacitvenoUcenjeView extends FrameView {
         beerLabel = new javax.swing.JLabel();
         poisonLabel = new javax.swing.JLabel();
         gridWorldPanel = new samoojacitvenoucenje.GUI.GridWorldPanel();
-        dragButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+        settingsMenu = new javax.swing.JMenu();
+        gridworldMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -272,9 +269,6 @@ public class SamoojacitvenoUcenjeView extends FrameView {
 
         gridWorldPanel.setName("gridWorldPanel"); // NOI18N
 
-        dragButton.setText(resourceMap.getString("dragButton.text")); // NOI18N
-        dragButton.setName("dragButton"); // NOI18N
-
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -284,26 +278,17 @@ public class SamoojacitvenoUcenjeView extends FrameView {
                 .addComponent(toolbarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gridWorldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81)
-                .addComponent(dragButton)
-                .addGap(328, 328, 328))
+                .addGap(264, 264, 264))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(gridWorldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 910, Short.MAX_VALUE)
-                            .addComponent(toolbarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(208, 208, 208)
-                        .addComponent(dragButton)))
+                    .addComponent(gridWorldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 910, Short.MAX_VALUE)
+                    .addComponent(toolbarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        dragButton.getAccessibleContext().setAccessibleName(resourceMap.getString("jButton1.AccessibleContext.accessibleName")); // NOI18N
 
         menuBar.setName("menuBar"); // NOI18N
 
@@ -316,6 +301,18 @@ public class SamoojacitvenoUcenjeView extends FrameView {
         fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
+
+        settingsMenu.setText(resourceMap.getString("settingsMenu.text")); // NOI18N
+        settingsMenu.setActionCommand(resourceMap.getString("settingsMenu.actionCommand")); // NOI18N
+        settingsMenu.setName("settingsMenu"); // NOI18N
+
+        gridworldMenuItem.setAction(actionMap.get("showChangeGridworldBox")); // NOI18N
+        gridworldMenuItem.setText(resourceMap.getString("gridworldMenuItem.text")); // NOI18N
+        gridworldMenuItem.setName("gridworldMenuItem"); // NOI18N
+        settingsMenu.add(gridworldMenuItem);
+
+        menuBar.add(settingsMenu);
+        settingsMenu.getAccessibleContext().setAccessibleName(resourceMap.getString("settingsMenu.AccessibleContext.accessibleName")); // NOI18N
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
         helpMenu.setName("helpMenu"); // NOI18N
@@ -339,11 +336,11 @@ public class SamoojacitvenoUcenjeView extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 1526, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 1578, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1506, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1558, Short.MAX_VALUE)
                 .addComponent(statusAnimationLabel)
                 .addContainerGap())
         );
@@ -367,15 +364,16 @@ public class SamoojacitvenoUcenjeView extends FrameView {
     private javax.swing.JLabel beerLabel;
     private javax.swing.JLabel bombLabel;
     private javax.swing.JLabel chiliLabel;
-    private javax.swing.JButton dragButton;
     private javax.swing.JLabel fireLabel;
     private javax.swing.JLabel foodLabel;
     private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanel;
+    private javax.swing.JMenuItem gridworldMenuItem;
     private javax.swing.JLabel healthLabel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JLabel mushroomLabel;
     private javax.swing.JLabel poisonLabel;
+    private javax.swing.JMenu settingsMenu;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
@@ -387,4 +385,6 @@ public class SamoojacitvenoUcenjeView extends FrameView {
 
 
     private JDialog aboutBox;
+    private JDialog gridworldBox;
+    private DragSource dragSource;
 }
