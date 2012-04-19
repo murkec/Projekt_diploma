@@ -4,6 +4,7 @@
  */
 package samoojacitvenoucenje.GUI;
 
+import samoojacitvenoucenje.GUI.DnD.TransferableIcon;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.dnd.DnDConstants;

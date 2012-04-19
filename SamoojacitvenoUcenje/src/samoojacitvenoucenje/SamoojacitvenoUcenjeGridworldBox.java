@@ -11,7 +11,9 @@
 package samoojacitvenoucenje;
 
 import java.awt.Color;
-import javax.swing.JDialog;
+import javax.swing.BorderFactory;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 
 /**
  *
@@ -19,6 +21,26 @@ import javax.swing.JDialog;
  */
 public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
 
+    private int page = 1;
+    private int numberOfPages = 0;
+    private String[] gridworldFilenames;
+    private ResourceMap resourceMap;
+    private int selectedGridworld = 0;
+    private static int selectedConfirmedGridworld = 0;
+    
+    public static boolean wasConfirmed = false;
+
+    public static int getSelectedConfirmedGridworld() {
+        return selectedConfirmedGridworld;
+    }
+    
+    public int getSelectedGridworld() {
+        return selectedGridworld;
+    }
+
+    private void setSelectedGridworld(int selectedGridworld) {
+        this.selectedGridworld = selectedGridworld;
+    }
     /** Creates new form SamoojacitvenoUcenjeGridworldBox
      * @param parent
      * @param modal  
@@ -26,6 +48,26 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
     public SamoojacitvenoUcenjeGridworldBox(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        resourceMap = Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeView.class);
+        
+
+        gridworldFilenames = SamoojacitvenoUcenjeView.gridworldFilenames;
+        for (int i = 0; i < gridworldFilenames.length; i++) {
+            gridworldFilenames[i] = resourceMap.getString("gridworld.world[" + i + "]");
+        }
+
+        
+        numberOfPages = (int) Math.ceil((gridworldFilenames.length / 3.0) + 0.5);
+        
+        pagingLabel.setText(page + " / " + numberOfPages);
+        
+        gridWorldPanelBig.changeGridWorld(gridworldFilenames[0]);
+
+        gridWorldPanelPreview1.changeGridWorld(gridworldFilenames[0]);
+        gridWorldPanelPreview2.changeGridWorld(gridworldFilenames[1]);
+        gridWorldPanelPreview3.changeGridWorld(gridworldFilenames[2]);
+        
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.green, 2));
         
         setResizable(false);
         getContentPane().setBackground(Color.white);
@@ -40,12 +82,15 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
         leftArrowLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        gridWorldPanel1 = new samoojacitvenoucenje.GUI.GridWorldPanel();
+        rightArrowLabel = new javax.swing.JLabel();
+        gridWorldPanelBig = new samoojacitvenoucenje.GUI.GridWorldPanel();
+        gridWorldPanelPreview1 = new samoojacitvenoucenje.GUI.GridWorldPanel();
+        gridWorldPanelPreview2 = new samoojacitvenoucenje.GUI.GridWorldPanel();
+        gridWorldPanelPreview3 = new samoojacitvenoucenje.GUI.GridWorldPanel();
+        pagingLabel = new javax.swing.JLabel();
+        confirmButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeGridworldBox.class);
@@ -54,116 +99,337 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
         setIconImage(null);
         setName("Form"); // NOI18N
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.setMaximumSize(new java.awt.Dimension(192, 128));
-        jPanel1.setMinimumSize(new java.awt.Dimension(192, 128));
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setPreferredSize(new java.awt.Dimension(192, 128));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 190, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 126, Short.MAX_VALUE)
-        );
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel2.setMaximumSize(new java.awt.Dimension(192, 128));
-        jPanel2.setMinimumSize(new java.awt.Dimension(192, 128));
-        jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setPreferredSize(new java.awt.Dimension(192, 128));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 190, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 126, Short.MAX_VALUE)
-        );
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel3.setMaximumSize(new java.awt.Dimension(192, 128));
-        jPanel3.setMinimumSize(new java.awt.Dimension(192, 128));
-        jPanel3.setName("jPanel3"); // NOI18N
-        jPanel3.setPreferredSize(new java.awt.Dimension(192, 128));
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 190, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 126, Short.MAX_VALUE)
-        );
-
         leftArrowLabel.setIcon(resourceMap.getIcon("leftArrowLabel.icon")); // NOI18N
         leftArrowLabel.setText(resourceMap.getString("leftArrowLabel.text")); // NOI18N
+        leftArrowLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         leftArrowLabel.setName("leftArrowLabel"); // NOI18N
+        leftArrowLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                leftArrowLabelMouseClicked(evt);
+            }
+        });
 
-        jLabel1.setIcon(resourceMap.getIcon("jLabel1.icon")); // NOI18N
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+        rightArrowLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        rightArrowLabel.setIcon(resourceMap.getIcon("rightArrowLabel.icon")); // NOI18N
+        rightArrowLabel.setText(resourceMap.getString("rightArrowLabel.text")); // NOI18N
+        rightArrowLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rightArrowLabel.setName("rightArrowLabel"); // NOI18N
+        rightArrowLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rightArrowLabelMouseClicked(evt);
+            }
+        });
 
-        gridWorldPanel1.setName("gridWorldPanel1"); // NOI18N
-        gridWorldPanel1.setPreferredSize(new java.awt.Dimension(786, 512));
+        gridWorldPanelBig.setName("gridWorldPanelBig"); // NOI18N
+        gridWorldPanelBig.setPreferredSize(new java.awt.Dimension(768, 512));
+
+        gridWorldPanelPreview1.setName("gridWorldPanelPreview1"); // NOI18N
+        gridWorldPanelPreview1.setPreferredSize(new java.awt.Dimension(192, 128));
+        gridWorldPanelPreview1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview1MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview1MouseExited(evt);
+            }
+        });
+
+        gridWorldPanelPreview2.setName("gridWorldPanelPreview2"); // NOI18N
+        gridWorldPanelPreview2.setPreferredSize(new java.awt.Dimension(192, 128));
+        gridWorldPanelPreview2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview2MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview2MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview2MouseExited(evt);
+            }
+        });
+
+        gridWorldPanelPreview3.setName("gridWorldPanelPreview3"); // NOI18N
+        gridWorldPanelPreview3.setPreferredSize(new java.awt.Dimension(192, 128));
+        gridWorldPanelPreview3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview3MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview3MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                gridWorldPanelPreview3MouseExited(evt);
+            }
+        });
+
+        pagingLabel.setText(resourceMap.getString("pagingLabel.text")); // NOI18N
+        pagingLabel.setName("pagingLabel"); // NOI18N
+
+        confirmButton.setText(resourceMap.getString("confirmButton.text")); // NOI18N
+        confirmButton.setName("confirmButton"); // NOI18N
+        confirmButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        confirmButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                confirmButtonMouseClicked(evt);
+            }
+        });
+
+        cancelButton.setText(resourceMap.getString("cancelButton.text")); // NOI18N
+        cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cancelButtonMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(gridWorldPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(leftArrowLabel)
-                        .addGap(26, 26, 26)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(gridWorldPanelBig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(leftArrowLabel)
+                                .addGap(26, 26, 26)
+                                .addComponent(gridWorldPanelPreview1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(gridWorldPanelPreview2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(gridWorldPanelPreview3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(rightArrowLabel))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(pagingLabel)
+                                .addGap(400, 400, 400)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(210, 210, 210))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(gridWorldPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gridWorldPanelBig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(34, 34, 34)
+                                .addGap(14, 14, 14)
+                                .addComponent(pagingLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(gridWorldPanelPreview1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(gridWorldPanelPreview2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(gridWorldPanelPreview3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(66, 66, 66)
-                                .addComponent(jLabel1)))
-                        .addContainerGap())
+                                .addComponent(rightArrowLabel))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(leftArrowLabel)
-                        .addGap(46, 46, 46))))
+                        .addGap(32, 32, 32)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void leftArrowLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_leftArrowLabelMouseClicked
+        // TODO add your handling code here:
+        page--;
+        
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        if(page <= 0)
+            page = numberOfPages;
+
+        pagingLabel.setText(page + " / " + numberOfPages);
+
+        if(page * 3 - 3 <  gridworldFilenames.length) { 
+            gridWorldPanelPreview1.setVisible(true);
+            gridWorldPanelPreview1.changeGridWorld(gridworldFilenames[page * 3 - 3]);
+            
+            if(getSelectedGridworld() ==  page * 3 - 3)
+                gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        }
+        else {
+            gridWorldPanelPreview1.setVisible(false);
+            //gridWorldPanelPreview1.resetGridWorld();
+        }
+        if(page * 3 - 2 <  gridworldFilenames.length) {
+            gridWorldPanelPreview2.setVisible(true);
+            gridWorldPanelPreview2.changeGridWorld(gridworldFilenames[page * 3 - 2]);
+            
+            if(getSelectedGridworld() ==  page * 3 - 2)
+                gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        }
+        else {
+            //gridWorldPanelPreview2.resetGridWorld();
+            gridWorldPanelPreview2.setVisible(false);
+        }
+        
+        if(page * 3 - 1 <  gridworldFilenames.length) {
+            gridWorldPanelPreview3.setVisible(true);
+            gridWorldPanelPreview3.changeGridWorld(gridworldFilenames[page * 3 - 1]);
+            
+            if(getSelectedGridworld() ==  page * 3 - 1)
+                gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        }
+        else {
+            //gridWorldPanelPreview3.resetGridWorld();
+            gridWorldPanelPreview3.setVisible(false);
+        }
+        
+    }//GEN-LAST:event_leftArrowLabelMouseClicked
+
+    private void rightArrowLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rightArrowLabelMouseClicked
+        // TODO add your handling code here:
+        page++;
+        
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+
+       if(page > numberOfPages)
+            page = 1;
+        
+       pagingLabel.setText(page + " / " + numberOfPages);
+
+        if(page * 3 - 3 <  gridworldFilenames.length) {
+            gridWorldPanelPreview1.setVisible(true);
+            gridWorldPanelPreview1.changeGridWorld(gridworldFilenames[page * 3 - 3]);
+            
+            if(getSelectedGridworld() ==  page * 3 - 3)
+                gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        }
+        else {
+            gridWorldPanelPreview1.setVisible(false);
+            //gridWorldPanelPreview1.resetGridWorld();
+        }
+        
+        if(page * 3 - 2 <  gridworldFilenames.length) {
+            gridWorldPanelPreview2.setVisible(true);
+            gridWorldPanelPreview2.changeGridWorld(gridworldFilenames[page * 3 - 2]);
+            
+            if(getSelectedGridworld() ==  page * 3 - 2)
+                gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        }
+        else {
+            //gridWorldPanelPreview2.resetGridWorld();
+            gridWorldPanelPreview2.setVisible(false);
+        }
+        
+        if(page * 3 - 1 <  gridworldFilenames.length) {
+            gridWorldPanelPreview3.setVisible(true);
+            gridWorldPanelPreview3.changeGridWorld(gridworldFilenames[page * 3 - 1]);
+            
+            if(getSelectedGridworld() ==  page * 3 - 1)
+                gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        }
+        else {
+            //gridWorldPanelPreview3.resetGridWorld();
+            gridWorldPanelPreview3.setVisible(false);
+        }
+    }//GEN-LAST:event_rightArrowLabelMouseClicked
+
+    private void gridWorldPanelPreview1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview1MouseClicked
+        // TODO add your handling code here:
+        this.setSelectedGridworld(page * 3 - 3);
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+    }//GEN-LAST:event_gridWorldPanelPreview1MouseClicked
+
+    private void gridWorldPanelPreview1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview1MouseEntered
+        // TODO add your handling code here:
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.red, 2));
+    }//GEN-LAST:event_gridWorldPanelPreview1MouseEntered
+
+    private void gridWorldPanelPreview1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview1MouseExited
+        // TODO add your handling code here:
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        if(this.getSelectedGridworld() == page * 3 - 3)
+            gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+    }//GEN-LAST:event_gridWorldPanelPreview1MouseExited
+
+    private void gridWorldPanelPreview2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview2MouseClicked
+        // TODO add your handling code here:
+        this.setSelectedGridworld(page * 3 - 2);
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+    }//GEN-LAST:event_gridWorldPanelPreview2MouseClicked
+
+    private void gridWorldPanelPreview2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview2MouseEntered
+        // TODO add your handling code here:
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.red, 2));
+    }//GEN-LAST:event_gridWorldPanelPreview2MouseEntered
+
+    private void gridWorldPanelPreview2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview2MouseExited
+        // TODO add your handling code here:
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        if(this.getSelectedGridworld() == page * 3 - 2)
+            gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+    }//GEN-LAST:event_gridWorldPanelPreview2MouseExited
+
+    private void gridWorldPanelPreview3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview3MouseClicked
+        // TODO add your handling code here:
+        this.setSelectedGridworld(page * 3 - 1);
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+        
+        gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+    }//GEN-LAST:event_gridWorldPanelPreview3MouseClicked
+
+    private void gridWorldPanelPreview3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview3MouseEntered
+        // TODO add your handling code here:
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.red, 2));
+    }//GEN-LAST:event_gridWorldPanelPreview3MouseEntered
+
+    private void gridWorldPanelPreview3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview3MouseExited
+        // TODO add your handling code here:
+        gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        if(this.getSelectedGridworld() == page * 3 - 1)
+            gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.green, 2));
+    }//GEN-LAST:event_gridWorldPanelPreview3MouseExited
+
+    private void confirmButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmButtonMouseClicked
+        // TODO add your handling code here:
+        wasConfirmed = true;
+        selectedConfirmedGridworld = selectedGridworld;
+        dispose();
+    }//GEN-LAST:event_confirmButtonMouseClicked
+
+    private void cancelButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseClicked
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_cancelButtonMouseClicked
+
+    
     /**
      * @param args the command line arguments
      */
@@ -194,6 +460,7 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 SamoojacitvenoUcenjeGridworldBox dialog = new SamoojacitvenoUcenjeGridworldBox(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -208,11 +475,14 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanel1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton confirmButton;
+    private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanelBig;
+    private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanelPreview1;
+    private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanelPreview2;
+    private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanelPreview3;
     private javax.swing.JLabel leftArrowLabel;
+    private javax.swing.JLabel pagingLabel;
+    private javax.swing.JLabel rightArrowLabel;
     // End of variables declaration//GEN-END:variables
 }

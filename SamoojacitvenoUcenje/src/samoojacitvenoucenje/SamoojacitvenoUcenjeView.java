@@ -4,35 +4,28 @@
 
 package samoojacitvenoucenje;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
-import java.awt.Image;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.IOException;
-import javax.swing.AbstractButton;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.TransferHandler;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import samoojacitvenoucenje.GUI.GridWorldCell;
-import samoojacitvenoucenje.GUI.ImageIconTargetListener;
-import samoojacitvenoucenje.GUI.TransferableIcon;
+import samoojacitvenoucenje.GUI.DnD.ImageIconTargetListener;
+import samoojacitvenoucenje.GUI.DnD.TransferableIcon;
 
 
 
@@ -40,12 +33,20 @@ import samoojacitvenoucenje.GUI.TransferableIcon;
  * The application's main frame.
  */
 public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureListener {
-
-
     
     public SamoojacitvenoUcenjeView(SingleFrameApplication app) {
         super(app);
         initComponents();
+        ResourceMap resourceMap = Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeView.class);
+        
+        
+        for (int i = 0; i < gridworldFilenames.length; i++) {
+            gridworldFilenames[i] = resourceMap.getString("gridworld.world[" + i + "]");
+        }
+        
+        gridWorldPanel.changeGridWorld(gridworldFilenames[0]);
+        
+        
 
         getFrame().setUndecorated(true);
         getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -55,6 +56,8 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         for(int i = 0; i < gridWorldPanel.getComponentCount(); i++)  
             new ImageIconTargetListener((GridWorldCell)gridWorldPanel.getComponent(i), this);
         
+        
+
         
         dragSource = new DragSource();
         dragSource.createDefaultDragGestureRecognizer(healthLabel, DnDConstants.ACTION_COPY, this);
@@ -71,9 +74,23 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
  
         mainPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        
+        // DEBUGGING
+        int width = gridWorldPanel.getWidth();
+        int height = gridWorldPanel.getHeight();
+        
+        /*
+        int cellx = 0;
+        int celly = 5;
+        GridWorldCell gwc = (GridWorldCell)gridWorldPanel.getComponentAt(cellx, celly);
+        gwc.setOpaque(true);
+        gwc.setBackground(Color.red);
+        */
+
 
     }
 
+    @Override
     public void dragGestureRecognized(DragGestureEvent event) {
         Cursor cursor = null;
         
@@ -104,6 +121,25 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
             JFrame mainFrame = SamoojacitvenoUcenjeApp.getApplication().getMainFrame();
             gridworldBox = new SamoojacitvenoUcenjeGridworldBox(mainFrame, true);
             gridworldBox.setLocationRelativeTo(mainFrame);
+
+            gridworldBox.addWindowListener(new WindowAdapter() 
+            {
+                @Override
+                public void windowClosed(WindowEvent e)
+                {
+                    System.out.println("jdialog window closed event received");
+                    if(SamoojacitvenoUcenjeGridworldBox.wasConfirmed) {
+                        gridWorldPanel.changeGridWorld(gridworldFilenames[SamoojacitvenoUcenjeGridworldBox.getSelectedConfirmedGridworld()]);
+                    }
+                }
+
+                @Override
+                public void windowClosing(WindowEvent e)
+                {
+                    System.out.println("jdialog window closing event received");
+                    //gridworldBox.isco
+                }
+            });
         }
         SamoojacitvenoUcenjeApp.getApplication().show(gridworldBox);
     }
@@ -253,7 +289,7 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
                 .addComponent(beerLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(poisonLabel)
-                .addContainerGap(485, Short.MAX_VALUE))
+                .addContainerGap(215, Short.MAX_VALUE))
         );
 
         foodLabel.getAccessibleContext().setAccessibleName(resourceMap.getString("foodLabel.AccessibleContext.accessibleName")); // NOI18N
@@ -267,7 +303,10 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         beerLabel.getAccessibleContext().setAccessibleName(resourceMap.getString("beerLabel.AccessibleContext.accessibleName")); // NOI18N
         poisonLabel.getAccessibleContext().setAccessibleName(resourceMap.getString("poisonLabel.AccessibleContext.accessibleName")); // NOI18N
 
+        gridWorldPanel.setMaximumSize(new java.awt.Dimension(960, 640));
+        gridWorldPanel.setMinimumSize(new java.awt.Dimension(960, 640));
         gridWorldPanel.setName("gridWorldPanel"); // NOI18N
+        gridWorldPanel.setOpaque(false);
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -277,17 +316,17 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
                 .addContainerGap()
                 .addComponent(toolbarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridWorldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(264, 264, 264))
+                .addComponent(gridWorldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(548, 548, 548))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gridWorldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 910, Short.MAX_VALUE)
-                    .addComponent(toolbarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(toolbarPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gridWorldPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -387,4 +426,5 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     private JDialog aboutBox;
     private JDialog gridworldBox;
     private DragSource dragSource;
+    public static final String[] gridworldFilenames = new String[7];
 }
