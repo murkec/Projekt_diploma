@@ -17,6 +17,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -47,6 +48,109 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
     private static final int ROWS = 20;
     private static final int COLUMNS = 30;
     
+    private Point characterPointPosition = new Point(0, 0);
+    private int characterIndexPosition = 0;
+    
+    private int[][] gridWorldMatrix;
+
+    
+    public void changeCharacterPosition(int position) {     
+        GridWorldCell character = (GridWorldCell)this.getComponent(characterIndexPosition);
+        int x = 0;
+        int y = 0;
+            
+
+        if(position == 0) {         // UP
+            y = -1;
+        } else if(position == 1) {  // RIGHT
+            x = 1;
+        } else if(position == 2) {  // DOWN
+            y = 1;
+        } else if(position == 3) {  // LEFT
+            x = -1;
+        }
+        
+        if(x != 0 && characterPointPosition.x + x >= 0 && characterPointPosition.x + x < COLUMNS) {         
+            // update character position
+            characterPointPosition.x += x;
+            characterIndexPosition += x;   
+            
+            // reset current image icon
+            character.setIcon(null);
+            // get nextPosition component
+            GridWorldCell moveCharacter = (GridWorldCell)this.getComponent(characterIndexPosition);                  
+            // interaction
+            characterInteractWithEnvironment(moveCharacter.getCellValue());
+                 
+            if(x == 1) {            // RIGHT
+               moveCharacter.setIcon(resourceMap.getIcon("characterLabel.icon.right"));          
+            } else if(x == -1) {    // LEFT
+                moveCharacter.setIcon(resourceMap.getIcon("characterLabel.icon.left"));
+            }
+            
+        }
+        
+        if(y != 0 && characterPointPosition.y + y >= 0 && characterPointPosition.y + y < ROWS) {
+            // update character position
+            characterPointPosition.y += y;
+            characterIndexPosition += 30 * y;     
+                  
+            // reset current image icon
+            character.setIcon(null);
+            // get nextPosition component
+            GridWorldCell moveCharacter = (GridWorldCell)this.getComponent(characterIndexPosition);
+            // interaction
+            characterInteractWithEnvironment(moveCharacter.getCellValue());
+            
+             if(y == 1) {           // DOWN
+               moveCharacter.setIcon(resourceMap.getIcon("characterLabel.icon.down"));          
+            } else if(y == -1) {    // UP
+                moveCharacter.setIcon(resourceMap.getIcon("characterLabel.icon.up"));
+            }
+        }
+    }
+    
+    private void characterInteractWithEnvironment(int nextCellValue) {
+        GridCharacter character = SamoojacitvenoUcenjeView.getCharacter();
+        
+        switch(nextCellValue)
+        {
+            case 0: // Empty
+                break;
+            case 10: // Health
+                character.addHealth(10);
+                break;
+            case 11: // Food
+                character.addHunger(15);
+                break;
+            case 12: // Time
+                break;
+            case 13: // Wall
+                break;
+            case 14: // Bomb
+                character.removeHealth(15);
+                break;
+            case 15: // Water
+                character.addHunger(10);
+                break;
+            case 16: // Fire
+                character.removeHealth(10);
+                break;
+            case 17: // Mushroom
+                character.setSpeed(1500);
+                break;                          
+            case 18: // Chili
+                break;
+            case 19: // Beer
+                character.setSpeed(1000);
+                break;   
+            case 20: // Poison
+                break;
+        }
+        
+        SamoojacitvenoUcenjeView.setCharacter(character);
+    }
+    
     //<editor-fold defaultstate="collapsed" desc="no vertical and horizontal gap fill">
     private GridLayout gridWorldLayout = new GridLayout(20, 30, 0, 0);
     //</editor-fold>
@@ -73,15 +177,19 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
         
         resourceMap = Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeView.class);
         
-        
+        gridWorldMatrix = new int[ROWS][COLUMNS];
         
         GridWorldCell currentCell;
         for(int i = 0; i < ROWS * COLUMNS; i++)
         {
             //currentCell = new GridWorldCell(" " + (i));
             currentCell = new GridWorldCell();
+            
+
             //currentCell.setIcon(resourceMap.getIcon("gridcellLabel.icon")); // NOI18N
-            this.add("Label1", currentCell);
+            
+
+            this.add(currentCell);
             
             int cellWidth = currentCell.getWidth();
             int cellHeight = currentCell.getHeight();
@@ -104,6 +212,9 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
             String row;
             int cellCounter = 0;
             
+            int rowCounter = 0;
+            int columnCounter = 0;
+            
             //while((character = br.read()))
             while((row = br.readLine()) != null)
             {
@@ -112,52 +223,75 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
                 for (int i = 0; i < cell.length; i++) {
                     System.out.println(cell[i]);
                     int value = Integer.parseInt(cell[i]);
+                    
+                    gridWorldMatrix[rowCounter][columnCounter] = value;
+                    
                     GridWorldCell currentCell = (GridWorldCell)this.getComponent(cellCounter);
 
                     currentCell.setIcon(null);
-                     
-                    switch(value)
-                    {
-                        case 0: // Empty
-                            break;
-                        case 10: // Health
-                            currentCell.setIcon(resourceMap.getIcon("healthLabel.icon"));
-                            break;
-                        case 11: // Food
-                            currentCell.setIcon(resourceMap.getIcon("foodLabel.icon"));
-                            break;
-                        case 12: // Time
-                            currentCell.setIcon(resourceMap.getIcon("timeLabel.icon"));
-                            break;
-                        case 13: // Wall
-                            currentCell.setIcon(resourceMap.getIcon("wallLabel.icon"));
-                            break;
-                        case 14: // Bomb
-                            currentCell.setIcon(resourceMap.getIcon("bombLabel.icon"));
-                            break;
-                        case 15: // Water
-                            currentCell.setIcon(resourceMap.getIcon("waterLabel.icon"));
-                            break;
-                        case 16: // Fire
-                            currentCell.setIcon(resourceMap.getIcon("fireLabel.icon"));
-                            break;
-                        case 17: // Mushroom
-                            currentCell.setIcon(resourceMap.getIcon("mushroomLabel.icon"));
-                            break;                          
-                        case 18: // Chili
-                            currentCell.setIcon(resourceMap.getIcon("chiliLabel.icon"));
-                            break;
-                        case 19: // Beer
-                            currentCell.setIcon(resourceMap.getIcon("beerLabel.icon"));
-                            break;   
-                        case 20: // Poison
-                            currentCell.setIcon(resourceMap.getIcon("poisonLabel.icon"));
-                            break;
+                                   
+
+                    if(cellCounter == 0) { // Character - starting point
+                        characterPointPosition = new Point(0, 0);
+                        characterIndexPosition = 0;
+                        
+                        currentCell.setIcon(resourceMap.getIcon("characterLabel.icon.down"));
+                        gridWorldMatrix[rowCounter][columnCounter] = 999;
+                        currentCell.setCellValue(999);
                     }
+                    else {
+                        switch(value)
+                        {
+                            case 0: // Empty
+                                break;
+                            case 10: // Health
+                                currentCell.setIcon(resourceMap.getIcon("healthLabel.icon"));
+                                break;
+                            case 11: // Food
+                                currentCell.setIcon(resourceMap.getIcon("foodLabel.icon"));
+                                break;
+                            case 12: // Time
+                                currentCell.setIcon(resourceMap.getIcon("timeLabel.icon"));
+                                break;
+                            case 13: // Wall
+                                currentCell.setIcon(resourceMap.getIcon("wallLabel.icon"));
+                                break;
+                            case 14: // Bomb
+                                currentCell.setIcon(resourceMap.getIcon("bombLabel.icon"));
+                                break;
+                            case 15: // Water
+                                currentCell.setIcon(resourceMap.getIcon("waterLabel.icon"));
+                                break;
+                            case 16: // Fire
+                                currentCell.setIcon(resourceMap.getIcon("fireLabel.icon"));
+                                break;
+                            case 17: // Mushroom
+                                currentCell.setIcon(resourceMap.getIcon("mushroomLabel.icon"));
+                                break;                          
+                            case 18: // Chili
+                                currentCell.setIcon(resourceMap.getIcon("chiliLabel.icon"));
+                                break;
+                            case 19: // Beer
+                                currentCell.setIcon(resourceMap.getIcon("beerLabel.icon"));
+                                break;   
+                            case 20: // Poison
+                                currentCell.setIcon(resourceMap.getIcon("poisonLabel.icon"));
+                                break;
+
+
+                        }
+                        
                     
-                    currentCell.setCellValue(value);
+                        currentCell.setCellValue(value);
+                    }
                     cellCounter++;
+                    columnCounter++;
+                    
+                    if(columnCounter == COLUMNS - 1)
+                        columnCounter = 0;
                 }
+                
+                rowCounter++;
                 
             }
             fr.close();
@@ -188,6 +322,32 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
                       
     }
     
+    
+    @Override
+    public Component getComponentAt(Point p) {
+        int x = p.x;
+        int y = p.y;
+        Component c = getComponent(x * y);
+        /*
+        
+        Component c = locate(30, 30);
+        //return locate((x - 1) * 32, (y - 1) * 32);
+
+        if (x == 1) { x = 2; }
+        else if (x > 30) { x = 30; }
+        
+        if (y == 1) { y = 2; }
+        else if (x > 20) { y = 20; }
+        
+        if(x > 0 && y > 0)
+            c = locate(Math.abs(x * 32), Math.abs(y * 32));
+        else if(x <= 0 && y > 1)
+            c = locate(30, (y - 1) * 32);
+        else if(x > 1 && y <= 0)
+            c = locate((x - 1) * 32, 30);     
+        */
+        return c;
+    }
     
     @Override
     public Component getComponentAt(int x, int y) {

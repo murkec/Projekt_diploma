@@ -4,10 +4,10 @@
 
 package samoojacitvenoucenje;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.SingleFrameApplication;
@@ -19,25 +19,53 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Random;
+import javax.swing.Timer;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import samoojacitvenoucenje.GUI.GridWorldCell;
 import samoojacitvenoucenje.GUI.DnD.ImageIconTargetListener;
 import samoojacitvenoucenje.GUI.DnD.TransferableIcon;
+import samoojacitvenoucenje.GUI.GridCharacter;
 
 
 
 /**
  * The application's main frame.
  */
-public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureListener {
+public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureListener, ActionListener {
+
+    /**
+     * @return the character
+     */
+    public static GridCharacter getCharacter() {
+        return character;
+    }
+
+    /**
+     * @param aCharacter the character to set
+     */
+    public static void setCharacter(GridCharacter aCharacter) {
+        character = aCharacter;
+    }
     
+    private boolean isGameStarted = false;
+    private boolean isFirstStart = true;
+    private GridWorldCell characterLabel;
+    private ResourceMap resourceMap;
+    
+    private static GridCharacter character;
+    
+    private Timer gameTimer;
+
     public SamoojacitvenoUcenjeView(SingleFrameApplication app) {
         super(app);
         initComponents();
-        ResourceMap resourceMap = Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeView.class);
+        resourceMap = Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeView.class);
         
         
         for (int i = 0; i < gridworldFilenames.length; i++) {
@@ -47,7 +75,6 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         gridWorldPanel.changeGridWorld(gridworldFilenames[0]);
         
         
-
         getFrame().setUndecorated(true);
         getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
         getFrame().setTitle("Survivor!");
@@ -167,6 +194,49 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         beerLabel = new javax.swing.JLabel();
         poisonLabel = new javax.swing.JLabel();
         gridWorldPanel = new samoojacitvenoucenje.GUI.GridWorldPanel();
+        startButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+        healthBarLabel1 = new javax.swing.JLabel();
+        healthBarLabel2 = new javax.swing.JLabel();
+        healthBarLabel3 = new javax.swing.JLabel();
+        healthBarLabel4 = new javax.swing.JLabel();
+        healthBarLabel5 = new javax.swing.JLabel();
+        healthBarLabel6 = new javax.swing.JLabel();
+        healthBarLabel7 = new javax.swing.JLabel();
+        healthBarLabel8 = new javax.swing.JLabel();
+        healthBarLabel9 = new javax.swing.JLabel();
+        healthBarLabel10 = new javax.swing.JLabel();
+        healthBarLabel11 = new javax.swing.JLabel();
+        healthBarLabel12 = new javax.swing.JLabel();
+        healthBarLabel13 = new javax.swing.JLabel();
+        healthBarLabel14 = new javax.swing.JLabel();
+        healthBarLabel15 = new javax.swing.JLabel();
+        healthBarLabel16 = new javax.swing.JLabel();
+        healthBarLabel17 = new javax.swing.JLabel();
+        healthBarLabel18 = new javax.swing.JLabel();
+        healthBarLabel19 = new javax.swing.JLabel();
+        healthBarLabel20 = new javax.swing.JLabel();
+        hungerBarLabel1 = new javax.swing.JLabel();
+        hungerBarLabel2 = new javax.swing.JLabel();
+        hungerBarLabel3 = new javax.swing.JLabel();
+        hungerBarLabel4 = new javax.swing.JLabel();
+        hungerBarLabel5 = new javax.swing.JLabel();
+        hungerBarLabel6 = new javax.swing.JLabel();
+        hungerBarLabel7 = new javax.swing.JLabel();
+        hungerBarLabel8 = new javax.swing.JLabel();
+        hungerBarLabel9 = new javax.swing.JLabel();
+        hungerBarLabel10 = new javax.swing.JLabel();
+        hungerBarLabel11 = new javax.swing.JLabel();
+        hungerBarLabel12 = new javax.swing.JLabel();
+        hungerBarLabel13 = new javax.swing.JLabel();
+        hungerBarLabel14 = new javax.swing.JLabel();
+        hungerBarLabel15 = new javax.swing.JLabel();
+        hungerBarLabel16 = new javax.swing.JLabel();
+        hungerBarLabel17 = new javax.swing.JLabel();
+        hungerBarLabel18 = new javax.swing.JLabel();
+        hungerBarLabel19 = new javax.swing.JLabel();
+        hungerBarLabel20 = new javax.swing.JLabel();
+        timeBarLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -306,27 +376,311 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         gridWorldPanel.setMaximumSize(new java.awt.Dimension(960, 640));
         gridWorldPanel.setMinimumSize(new java.awt.Dimension(960, 640));
         gridWorldPanel.setName("gridWorldPanel"); // NOI18N
-        gridWorldPanel.setOpaque(false);
+
+        startButton.setText(resourceMap.getString("startButton.text")); // NOI18N
+        startButton.setName("startButton"); // NOI18N
+        startButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                startButtonMouseClicked(evt);
+            }
+        });
+
+        resetButton.setText(resourceMap.getString("resetButton.text")); // NOI18N
+        resetButton.setEnabled(false);
+        resetButton.setMaximumSize(new java.awt.Dimension(57, 23));
+        resetButton.setMinimumSize(new java.awt.Dimension(57, 23));
+        resetButton.setName("resetButton"); // NOI18N
+        resetButton.setPreferredSize(new java.awt.Dimension(57, 23));
+        resetButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                resetButtonMouseClicked(evt);
+            }
+        });
+
+        healthBarLabel1.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel1.setText(resourceMap.getString("healthBarLabel1.text")); // NOI18N
+        healthBarLabel1.setName("healthBarLabel1"); // NOI18N
+
+        healthBarLabel2.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel2.setName("healthBarLabel2"); // NOI18N
+
+        healthBarLabel3.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel3.setName("healthBarLabel3"); // NOI18N
+
+        healthBarLabel4.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel4.setName("healthBarLabel4"); // NOI18N
+
+        healthBarLabel5.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel5.setName("healthBarLabel5"); // NOI18N
+
+        healthBarLabel6.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel6.setName("healthBarLabel6"); // NOI18N
+
+        healthBarLabel7.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel7.setName("healthBarLabel7"); // NOI18N
+
+        healthBarLabel8.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel8.setName("healthBarLabel8"); // NOI18N
+
+        healthBarLabel9.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel9.setName("healthBarLabel9"); // NOI18N
+
+        healthBarLabel10.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel10.setName("healthBarLabel10"); // NOI18N
+
+        healthBarLabel11.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel11.setName("healthBarLabel11"); // NOI18N
+
+        healthBarLabel12.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel12.setName("healthBarLabel12"); // NOI18N
+
+        healthBarLabel13.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel13.setName("healthBarLabel13"); // NOI18N
+
+        healthBarLabel14.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel14.setName("healthBarLabel14"); // NOI18N
+
+        healthBarLabel15.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel15.setName("healthBarLabel15"); // NOI18N
+
+        healthBarLabel16.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel16.setName("healthBarLabel16"); // NOI18N
+
+        healthBarLabel17.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel17.setName("healthBarLabel17"); // NOI18N
+
+        healthBarLabel18.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel18.setName("healthBarLabel18"); // NOI18N
+
+        healthBarLabel19.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel19.setName("healthBarLabel19"); // NOI18N
+
+        healthBarLabel20.setIcon(resourceMap.getIcon("healthBarLabel1.icon")); // NOI18N
+        healthBarLabel20.setName("healthBarLabel20"); // NOI18N
+
+        hungerBarLabel1.setIcon(resourceMap.getIcon("hungerBarLabel1.icon")); // NOI18N
+        hungerBarLabel1.setText(resourceMap.getString("hungerBarLabel1.text")); // NOI18N
+        hungerBarLabel1.setName("hungerBarLabel1"); // NOI18N
+
+        hungerBarLabel2.setIcon(resourceMap.getIcon("hungerBarLabel2.icon")); // NOI18N
+        hungerBarLabel2.setName("hungerBarLabel2"); // NOI18N
+
+        hungerBarLabel3.setIcon(resourceMap.getIcon("hungerBarLabel3.icon")); // NOI18N
+        hungerBarLabel3.setName("hungerBarLabel3"); // NOI18N
+
+        hungerBarLabel4.setIcon(resourceMap.getIcon("hungerBarLabel4.icon")); // NOI18N
+        hungerBarLabel4.setName("hungerBarLabel4"); // NOI18N
+
+        hungerBarLabel5.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel5.setName("hungerBarLabel5"); // NOI18N
+
+        hungerBarLabel6.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel6.setName("hungerBarLabel6"); // NOI18N
+
+        hungerBarLabel7.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel7.setName("hungerBarLabel7"); // NOI18N
+
+        hungerBarLabel8.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel8.setName("hungerBarLabel8"); // NOI18N
+
+        hungerBarLabel9.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel9.setName("hungerBarLabel9"); // NOI18N
+
+        hungerBarLabel10.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel10.setName("hungerBarLabel10"); // NOI18N
+
+        hungerBarLabel11.setIcon(resourceMap.getIcon("hungerBarLabel8.icon")); // NOI18N
+        hungerBarLabel11.setName("hungerBarLabel11"); // NOI18N
+
+        hungerBarLabel12.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel12.setName("hungerBarLabel12"); // NOI18N
+
+        hungerBarLabel13.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel13.setName("hungerBarLabel13"); // NOI18N
+
+        hungerBarLabel14.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel14.setName("hungerBarLabel14"); // NOI18N
+
+        hungerBarLabel15.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel15.setName("hungerBarLabel15"); // NOI18N
+
+        hungerBarLabel16.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel16.setName("hungerBarLabel16"); // NOI18N
+
+        hungerBarLabel17.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel17.setName("hungerBarLabel17"); // NOI18N
+
+        hungerBarLabel18.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel18.setName("hungerBarLabel18"); // NOI18N
+
+        hungerBarLabel19.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel19.setName("hungerBarLabel19"); // NOI18N
+
+        hungerBarLabel20.setIcon(resourceMap.getIcon("hungerBarLabel13.icon")); // NOI18N
+        hungerBarLabel20.setName("hungerBarLabel20"); // NOI18N
+
+        timeBarLabel.setFont(resourceMap.getFont("timeBarLabel.font")); // NOI18N
+        timeBarLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        timeBarLabel.setText(resourceMap.getString("timeBarLabel.text")); // NOI18N
+        timeBarLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        timeBarLabel.setName("timeBarLabel"); // NOI18N
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+            .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(toolbarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridWorldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(548, 548, 548))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(hungerBarLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hungerBarLabel20)
+                        .addGap(36, 36, 36)
+                        .addComponent(timeBarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(healthBarLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(healthBarLabel20))
+                    .addComponent(gridWorldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                    .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(414, 414, 414))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(toolbarPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(gridWorldPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addGap(11, 11, 11)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(hungerBarLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hungerBarLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(healthBarLabel20)
+                            .addComponent(healthBarLabel19)
+                            .addComponent(healthBarLabel18)
+                            .addComponent(healthBarLabel17)
+                            .addComponent(healthBarLabel16)
+                            .addComponent(healthBarLabel7)
+                            .addComponent(healthBarLabel2)
+                            .addComponent(healthBarLabel3)
+                            .addComponent(healthBarLabel4)
+                            .addComponent(healthBarLabel5)
+                            .addComponent(healthBarLabel6)
+                            .addComponent(healthBarLabel8)
+                            .addComponent(healthBarLabel9)
+                            .addComponent(healthBarLabel10)
+                            .addComponent(healthBarLabel11)
+                            .addComponent(healthBarLabel12)
+                            .addComponent(healthBarLabel13)
+                            .addComponent(healthBarLabel14)
+                            .addComponent(healthBarLabel15)
+                            .addComponent(healthBarLabel1)))
+                    .addComponent(timeBarLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(toolbarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gridWorldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(117, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -399,6 +753,48 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void startButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startButtonMouseClicked
+        // TODO add your handling code here:
+        gridworldMenuItem.setEnabled(false);
+        
+        if(isGameStarted == false) {
+            startButton.setText("Pause");
+            resetButton.setEnabled(true);        
+            isGameStarted = true;
+            
+           
+            
+            if(isFirstStart) {
+                character = new GridCharacter();
+                gameTimer = new Timer(character.getSpeed(), this);
+                
+                characterLabel = new GridWorldCell(resourceMap.getIcon("charaterLabel.icon"));
+
+                isFirstStart = false;
+            }
+            
+            gameTimer.start();
+        }
+        else {
+            startButton.setText("Start");     
+            isGameStarted = false;
+            gameTimer.stop();
+        }
+    }//GEN-LAST:event_startButtonMouseClicked
+
+    
+    private void resetButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetButtonMouseClicked
+        // TODO add your handling code here:
+        startButton.setText("Start");
+        resetButton.setEnabled(false);
+        
+        isGameStarted = false;
+        isFirstStart = true;
+        gridworldMenuItem.setEnabled(true);
+        
+         gameTimer.restart();
+    }//GEN-LAST:event_resetButtonMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel beerLabel;
     private javax.swing.JLabel bombLabel;
@@ -407,15 +803,58 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     private javax.swing.JLabel foodLabel;
     private samoojacitvenoucenje.GUI.GridWorldPanel gridWorldPanel;
     private javax.swing.JMenuItem gridworldMenuItem;
+    private javax.swing.JLabel healthBarLabel1;
+    private javax.swing.JLabel healthBarLabel10;
+    private javax.swing.JLabel healthBarLabel11;
+    private javax.swing.JLabel healthBarLabel12;
+    private javax.swing.JLabel healthBarLabel13;
+    private javax.swing.JLabel healthBarLabel14;
+    private javax.swing.JLabel healthBarLabel15;
+    private javax.swing.JLabel healthBarLabel16;
+    private javax.swing.JLabel healthBarLabel17;
+    private javax.swing.JLabel healthBarLabel18;
+    private javax.swing.JLabel healthBarLabel19;
+    private javax.swing.JLabel healthBarLabel2;
+    private javax.swing.JLabel healthBarLabel20;
+    private javax.swing.JLabel healthBarLabel3;
+    private javax.swing.JLabel healthBarLabel4;
+    private javax.swing.JLabel healthBarLabel5;
+    private javax.swing.JLabel healthBarLabel6;
+    private javax.swing.JLabel healthBarLabel7;
+    private javax.swing.JLabel healthBarLabel8;
+    private javax.swing.JLabel healthBarLabel9;
     private javax.swing.JLabel healthLabel;
+    private javax.swing.JLabel hungerBarLabel1;
+    private javax.swing.JLabel hungerBarLabel10;
+    private javax.swing.JLabel hungerBarLabel11;
+    private javax.swing.JLabel hungerBarLabel12;
+    private javax.swing.JLabel hungerBarLabel13;
+    private javax.swing.JLabel hungerBarLabel14;
+    private javax.swing.JLabel hungerBarLabel15;
+    private javax.swing.JLabel hungerBarLabel16;
+    private javax.swing.JLabel hungerBarLabel17;
+    private javax.swing.JLabel hungerBarLabel18;
+    private javax.swing.JLabel hungerBarLabel19;
+    private javax.swing.JLabel hungerBarLabel2;
+    private javax.swing.JLabel hungerBarLabel20;
+    private javax.swing.JLabel hungerBarLabel3;
+    private javax.swing.JLabel hungerBarLabel4;
+    private javax.swing.JLabel hungerBarLabel5;
+    private javax.swing.JLabel hungerBarLabel6;
+    private javax.swing.JLabel hungerBarLabel7;
+    private javax.swing.JLabel hungerBarLabel8;
+    private javax.swing.JLabel hungerBarLabel9;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JLabel mushroomLabel;
     private javax.swing.JLabel poisonLabel;
+    private javax.swing.JButton resetButton;
     private javax.swing.JMenu settingsMenu;
+    private javax.swing.JButton startButton;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JLabel timeBarLabel;
     private javax.swing.JLabel timeLabel;
     private javax.swing.JPanel toolbarPanel;
     private javax.swing.JLabel wallLabel;
@@ -427,4 +866,14 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     private JDialog gridworldBox;
     private DragSource dragSource;
     public static final String[] gridworldFilenames = new String[7];
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Random randomMove = new Random(new Date().getTime());
+        int rand = randomMove.nextInt(4);
+        
+        gridWorldPanel.changeCharacterPosition(rand);
+    }
+    
+
 }

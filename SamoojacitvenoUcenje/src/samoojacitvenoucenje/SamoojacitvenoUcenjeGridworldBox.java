@@ -358,6 +358,8 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
         
         gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
         gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        gridWorldPanelBig.changeGridWorld(gridworldFilenames[page * 3 - 3]);
     }//GEN-LAST:event_gridWorldPanelPreview1MouseClicked
 
     private void gridWorldPanelPreview1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview1MouseEntered
@@ -380,6 +382,8 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
         
         gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
         gridWorldPanelPreview3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        gridWorldPanelBig.changeGridWorld(gridworldFilenames[page * 3 - 2]);
     }//GEN-LAST:event_gridWorldPanelPreview2MouseClicked
 
     private void gridWorldPanelPreview2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview2MouseEntered
@@ -402,6 +406,8 @@ public class SamoojacitvenoUcenjeGridworldBox extends javax.swing.JDialog {
         
         gridWorldPanelPreview1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
         gridWorldPanelPreview2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        
+        gridWorldPanelBig.changeGridWorld(gridworldFilenames[page * 3 - 1]);
     }//GEN-LAST:event_gridWorldPanelPreview3MouseClicked
 
     private void gridWorldPanelPreview3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridWorldPanelPreview3MouseEntered
