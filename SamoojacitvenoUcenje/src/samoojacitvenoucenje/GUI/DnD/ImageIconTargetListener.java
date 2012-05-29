@@ -4,7 +4,6 @@
  */
 package samoojacitvenoucenje.GUI.DnD;
 
-import java.awt.datatransfer.FlavorMap;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -12,7 +11,6 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import samoojacitvenoucenje.GUI.GridWorldCell;
 import samoojacitvenoucenje.SamoojacitvenoUcenjeView;
 
@@ -48,10 +46,13 @@ public class ImageIconTargetListener extends DropTargetAdapter {
             if (event.isDataFlavorSupported(TransferableIcon.imageIconFlavor)) {
                 event.acceptDrop(DnDConstants.ACTION_COPY);
                 
-                if(label != null)
+                if(label != null) {
                     label.setIcon(imageIcon);
-                else if(gridCell != null)
+                }
+                else if(gridCell != null) {
                     gridCell.setIcon(imageIcon);
+                    gridCell.setCellValue(imageIcon);
+                }
 
                 event.dropComplete(true);
                 

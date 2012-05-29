@@ -262,6 +262,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="foodLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="foodLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="foodLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -275,6 +276,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="timeLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="timeLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="timeLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -287,6 +289,7 @@
             <Component class="javax.swing.JLabel" name="wallLabel">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="wallLabel.icon"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="wallLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -300,6 +303,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="bombLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="bombLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="bombLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -313,6 +317,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="waterLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="waterLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="waterLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -326,6 +331,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="fireLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="fireLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="fireLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -339,6 +345,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="mushroomLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="mushroomLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="mushroomLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -352,6 +359,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="chiliLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="chiliLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="chiliLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -365,6 +373,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="beerLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="beerLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="beerLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -378,6 +387,7 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" resourceKey="poisonLabel.icon"/>
                 <Property name="text" type="java.lang.String" resourceKey="poisonLabel.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="poisonLabel.toolTipText"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
@@ -552,7 +562,6 @@
         <Component class="javax.swing.JLabel" name="hungerBarLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" resourceKey="hungerBarLabel1.icon"/>
-            <Property name="text" type="java.lang.String" resourceKey="hungerBarLabel1.text"/>
             <Property name="name" type="java.lang.String" value="hungerBarLabel1" noResource="true"/>
           </Properties>
         </Component>

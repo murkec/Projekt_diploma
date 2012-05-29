@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 /**
@@ -78,6 +79,37 @@ public class GridWorldCell extends JLabel {
      */
     public void setCellValue(int cellValue) {
         this.cellValue = cellValue;
+    }
+    
+    /**
+     * @param cellValue the cellValue to set
+     */
+    public void setCellValue(ImageIcon icon) {
+        if(icon.toString().contains("health")) {
+            this.cellValue = 10;
+        } else if (icon.toString().contains("food")) {
+            this.cellValue = 11;
+        } else if (icon.toString().contains("time")) {
+            this.cellValue = 12;
+        } else if (icon.toString().contains("wall")) {
+            this.cellValue = 13;
+        } else if (icon.toString().contains("bomb")) {
+           this.cellValue = 14;
+        } else if (icon.toString().contains("water")) {
+            this.cellValue = 15;
+        } else if (icon.toString().contains("fire")) {
+            this.cellValue = 16;
+        } else if (icon.toString().contains("mushroom")) {
+            this.cellValue = 17;
+        } else if (icon.toString().contains("chili")) {
+            this.cellValue = 18;
+        } else if (icon.toString().contains("beer")) {
+            this.cellValue = 19;
+        } else if (icon.toString().contains("poison")) {
+            this.cellValue = 20;
+        } else {
+            this.cellValue = 0;
+        }
     }
 
 

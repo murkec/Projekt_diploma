@@ -31,6 +31,7 @@ import samoojacitvenoucenje.GUI.GridWorldCell;
 import samoojacitvenoucenje.GUI.DnD.ImageIconTargetListener;
 import samoojacitvenoucenje.GUI.DnD.TransferableIcon;
 import samoojacitvenoucenje.GUI.GridCharacter;
+import samoojacitvenoucenje.episode.Episode;
 
 
 
@@ -39,33 +40,97 @@ import samoojacitvenoucenje.GUI.GridCharacter;
  */
 public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureListener, ActionListener {
 
-    /**
-     * @return the character
-     */
-    public static GridCharacter getCharacter() {
-        return character;
-    }
-
-    /**
-     * @param aCharacter the character to set
-     */
-    public static void setCharacter(GridCharacter aCharacter) {
-        character = aCharacter;
-    }
+    private static final int MAX_EPISODE_TIME = 600; // seconds
+    private final int HUNGER_TIME = 5; // seconds
+    private final int STOP_TIME = 5; // seconds
     
     private boolean isGameStarted = false;
     private boolean isFirstStart = true;
+    private boolean hasGameEnded = false;
     private GridWorldCell characterLabel;
     private ResourceMap resourceMap;
     
-    private static GridCharacter character;
+    private static Episode currentEpisode;
+    private static GridCharacter character; 
+    private Timer gameTimer = new Timer(1000, this); // 1 sekund
+    private int countFiveSecondsWall = 5;
+    private int countFiveSecondsTime = 5;
     
-    private Timer gameTimer;
+    private static int secondsRemaining = MAX_EPISODE_TIME;
+
+    public static void addSecondsRemaining(int addedSeconds) {
+        SamoojacitvenoUcenjeView.secondsRemaining += addedSeconds;
+    }
+
+    public static void removeSecondsRemaining(int removedSeconds) {
+        SamoojacitvenoUcenjeView.secondsRemaining -= removedSeconds;
+    }
+
+    public static Episode getCurrentEpisode() {
+        return currentEpisode;
+    }
+
+    public static void setCurrentEpisode(Episode currentEpisode) {
+        SamoojacitvenoUcenjeView.currentEpisode = currentEpisode;
+    }
 
     public SamoojacitvenoUcenjeView(SingleFrameApplication app) {
         super(app);
         initComponents();
         resourceMap = Application.getInstance(samoojacitvenoucenje.SamoojacitvenoUcenjeApp.class).getContext().getResourceMap(SamoojacitvenoUcenjeView.class);
+        
+        
+        // <editor-fold defaultstate="collapsed" desc="Health and Hunger Label Array">
+        healthBarLabelArray = new JLabel[20];
+        healthBarLabelArray[0] = healthBarLabel1;
+        healthBarLabelArray[1] = healthBarLabel2;
+        healthBarLabelArray[2] = healthBarLabel3;
+        healthBarLabelArray[3] = healthBarLabel4;
+        healthBarLabelArray[4] = healthBarLabel5;
+        
+        healthBarLabelArray[5] = healthBarLabel6;
+        healthBarLabelArray[6] = healthBarLabel7;
+        healthBarLabelArray[7] = healthBarLabel8;
+        healthBarLabelArray[8] = healthBarLabel9;
+        healthBarLabelArray[9] = healthBarLabel10;
+        
+        healthBarLabelArray[10] = healthBarLabel11;
+        healthBarLabelArray[11] = healthBarLabel12;
+        healthBarLabelArray[12] = healthBarLabel13;
+        healthBarLabelArray[13] = healthBarLabel14;
+        healthBarLabelArray[14] = healthBarLabel15;
+        
+        healthBarLabelArray[15] = healthBarLabel16;
+        healthBarLabelArray[16] = healthBarLabel17;
+        healthBarLabelArray[17] = healthBarLabel18;
+        healthBarLabelArray[18] = healthBarLabel19;
+        healthBarLabelArray[19] = healthBarLabel20;
+        
+        hungerBarLabelArray = new JLabel[20];
+        hungerBarLabelArray[0] = hungerBarLabel1;
+        hungerBarLabelArray[1] = hungerBarLabel2;
+        hungerBarLabelArray[2] = hungerBarLabel3;
+        hungerBarLabelArray[3] = hungerBarLabel4;
+        hungerBarLabelArray[4] = hungerBarLabel5;
+        
+        hungerBarLabelArray[5] = hungerBarLabel6;
+        hungerBarLabelArray[6] = hungerBarLabel7;
+        hungerBarLabelArray[7] = hungerBarLabel8;
+        hungerBarLabelArray[8] = hungerBarLabel9;
+        hungerBarLabelArray[9] = hungerBarLabel10;
+        
+        hungerBarLabelArray[10] = hungerBarLabel11;
+        hungerBarLabelArray[11] = hungerBarLabel12;
+        hungerBarLabelArray[12] = hungerBarLabel13;
+        hungerBarLabelArray[13] = hungerBarLabel14;
+        hungerBarLabelArray[14] = hungerBarLabel15;
+        
+        hungerBarLabelArray[15] = hungerBarLabel16;
+        hungerBarLabelArray[16] = hungerBarLabel17;
+        hungerBarLabelArray[17] = hungerBarLabel18;
+        hungerBarLabelArray[18] = hungerBarLabel19;
+        hungerBarLabelArray[19] = hungerBarLabel20;
+        // </editor-fold>
         
         
         for (int i = 0; i < gridworldFilenames.length; i++) {
@@ -267,50 +332,60 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
 
         foodLabel.setIcon(resourceMap.getIcon("foodLabel.icon")); // NOI18N
         foodLabel.setText(resourceMap.getString("foodLabel.text")); // NOI18N
+        foodLabel.setToolTipText(resourceMap.getString("foodLabel.toolTipText")); // NOI18N
         foodLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         foodLabel.setName("foodLabel"); // NOI18N
 
         timeLabel.setIcon(resourceMap.getIcon("timeLabel.icon")); // NOI18N
         timeLabel.setText(resourceMap.getString("timeLabel.text")); // NOI18N
+        timeLabel.setToolTipText(resourceMap.getString("timeLabel.toolTipText")); // NOI18N
         timeLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         timeLabel.setName("timeLabel"); // NOI18N
 
         wallLabel.setIcon(resourceMap.getIcon("wallLabel.icon")); // NOI18N
+        wallLabel.setToolTipText(resourceMap.getString("wallLabel.toolTipText")); // NOI18N
         wallLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         wallLabel.setName("wallLabel"); // NOI18N
 
         bombLabel.setIcon(resourceMap.getIcon("bombLabel.icon")); // NOI18N
         bombLabel.setText(resourceMap.getString("bombLabel.text")); // NOI18N
+        bombLabel.setToolTipText(resourceMap.getString("bombLabel.toolTipText")); // NOI18N
         bombLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         bombLabel.setName("bombLabel"); // NOI18N
 
         waterLabel.setIcon(resourceMap.getIcon("waterLabel.icon")); // NOI18N
         waterLabel.setText(resourceMap.getString("waterLabel.text")); // NOI18N
+        waterLabel.setToolTipText(resourceMap.getString("waterLabel.toolTipText")); // NOI18N
         waterLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         waterLabel.setName("waterLabel"); // NOI18N
 
         fireLabel.setIcon(resourceMap.getIcon("fireLabel.icon")); // NOI18N
         fireLabel.setText(resourceMap.getString("fireLabel.text")); // NOI18N
+        fireLabel.setToolTipText(resourceMap.getString("fireLabel.toolTipText")); // NOI18N
         fireLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         fireLabel.setName("fireLabel"); // NOI18N
 
         mushroomLabel.setIcon(resourceMap.getIcon("mushroomLabel.icon")); // NOI18N
         mushroomLabel.setText(resourceMap.getString("mushroomLabel.text")); // NOI18N
+        mushroomLabel.setToolTipText(resourceMap.getString("mushroomLabel.toolTipText")); // NOI18N
         mushroomLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         mushroomLabel.setName("mushroomLabel"); // NOI18N
 
         chiliLabel.setIcon(resourceMap.getIcon("chiliLabel.icon")); // NOI18N
         chiliLabel.setText(resourceMap.getString("chiliLabel.text")); // NOI18N
+        chiliLabel.setToolTipText(resourceMap.getString("chiliLabel.toolTipText")); // NOI18N
         chiliLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         chiliLabel.setName("chiliLabel"); // NOI18N
 
         beerLabel.setIcon(resourceMap.getIcon("beerLabel.icon")); // NOI18N
         beerLabel.setText(resourceMap.getString("beerLabel.text")); // NOI18N
+        beerLabel.setToolTipText(resourceMap.getString("beerLabel.toolTipText")); // NOI18N
         beerLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         beerLabel.setName("beerLabel"); // NOI18N
 
         poisonLabel.setIcon(resourceMap.getIcon("poisonLabel.icon")); // NOI18N
         poisonLabel.setText(resourceMap.getString("poisonLabel.text")); // NOI18N
+        poisonLabel.setToolTipText(resourceMap.getString("poisonLabel.toolTipText")); // NOI18N
         poisonLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         poisonLabel.setName("poisonLabel"); // NOI18N
 
@@ -459,7 +534,6 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         healthBarLabel20.setName("healthBarLabel20"); // NOI18N
 
         hungerBarLabel1.setIcon(resourceMap.getIcon("hungerBarLabel1.icon")); // NOI18N
-        hungerBarLabel1.setText(resourceMap.getString("hungerBarLabel1.text")); // NOI18N
         hungerBarLabel1.setName("hungerBarLabel1"); // NOI18N
 
         hungerBarLabel2.setIcon(resourceMap.getIcon("hungerBarLabel2.icon")); // NOI18N
@@ -757,22 +831,24 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         // TODO add your handling code here:
         gridworldMenuItem.setEnabled(false);
         
+        if(hasGameEnded == true) {
+            resetButtonMouseClicked(evt);
+            hasGameEnded = false;
+        }
+        
         if(isGameStarted == false) {
             startButton.setText("Pause");
             resetButton.setEnabled(true);        
-            isGameStarted = true;
-            
-           
+            isGameStarted = true; 
             
             if(isFirstStart) {
+                currentEpisode = new Episode();
                 character = new GridCharacter();
-                gameTimer = new Timer(character.getSpeed(), this);
-                
                 characterLabel = new GridWorldCell(resourceMap.getIcon("charaterLabel.icon"));
 
                 isFirstStart = false;
             }
-            
+
             gameTimer.start();
         }
         else {
@@ -785,6 +861,8 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     
     private void resetButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetButtonMouseClicked
         // TODO add your handling code here:
+        gameTimer.stop();
+        
         startButton.setText("Start");
         resetButton.setEnabled(false);
         
@@ -792,7 +870,21 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         isFirstStart = true;
         gridworldMenuItem.setEnabled(true);
         
-         gameTimer.restart();
+
+        character.addHealth(GridCharacter.HEALTH_MAX);
+        character.addHunger(GridCharacter.HUNGER_MAX);
+        
+        character.hasHealthChanged = true;
+        character.hasHungerChanged = true;
+        
+        actionPerformed(null);
+        
+        secondsRemaining = MAX_EPISODE_TIME;
+        timeBarLabel.setText("00:00");
+        
+        gridWorldPanel.resetGridWorld();
+        
+        
     }//GEN-LAST:event_resetButtonMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -866,14 +958,118 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     private JDialog gridworldBox;
     private DragSource dragSource;
     public static final String[] gridworldFilenames = new String[7];
+    private final JLabel[] healthBarLabelArray; 
+    private final JLabel[] hungerBarLabelArray;
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Random randomMove = new Random(new Date().getTime());
         int rand = randomMove.nextInt(4);
         
-        gridWorldPanel.changeCharacterPosition(rand);
+        
+        // Remove HungerBar every <countFiveSecondsTime> seconds - default is 5 seconds
+        if(countFiveSecondsTime != 0) {
+            countFiveSecondsTime--;
+        }
+        else {
+            countFiveSecondsTime = HUNGER_TIME - 1;
+            character.removeHunger(5);
+            character.hasHungerChanged = true;
+        }
+        
+        // Character has to cross the wall - default is 5 seconds
+        if(character.isStopped() && countFiveSecondsWall != 1) {
+            countFiveSecondsWall--;
+        }
+        else {
+            countFiveSecondsWall = STOP_TIME;
+            character.setIsStopped(false);
+        }
+        
+        // Random movement when not stopped
+        if( ! character.isStopped()) {
+            gridWorldPanel.changeCharacterPosition(rand);
+        }
+        
+        // Showing left time of the current episode
+        Date tempDate = new Date(0, 0, 0, 0, 0, secondsRemaining);
+        
+        String secondsString = (String.valueOf(tempDate.getSeconds()).length() == 1) ? "0" + tempDate.getSeconds() : (String) String.valueOf(tempDate.getSeconds());
+        String minutesString = (String.valueOf(tempDate.getMinutes()).length() == 1) ? "0" + tempDate.getMinutes() : (String) String.valueOf(tempDate.getMinutes());
+        timeBarLabel.setText(minutesString + ":" + secondsString);
+        secondsRemaining--;
+        
+        // Update HealthBar
+        if(character.hasHealthChanged) {
+            character.hasHealthChanged = false;
+            
+            int currentHealth = character.getHealth();
+            
+            for (int i = 0; i < GridCharacter.HEALTH_MAX / 5; i++) {
+
+                JLabel currentHealthBarLabel = healthBarLabelArray[i];
+                
+                if(currentHealth / 5 > i) {
+                    currentHealthBarLabel.setIcon(resourceMap.getIcon(("healthBarLabel.icon.full")));
+                }
+                else {
+                    currentHealthBarLabel.setIcon(resourceMap.getIcon(("healthBarLabel.icon.empty")));
+                }
+
+            }
+        }
+        
+        // Update HungerBar
+        if(character.hasHungerChanged) {
+            character.hasHungerChanged = false;
+            
+            int currentHunger = character.getHunger();
+            
+            for (int i = 0; i < GridCharacter.HUNGER_MAX / 5; i++) {
+
+                if(currentHunger / 5 > i) {
+                    hungerBarLabelArray[i].setIcon(resourceMap.getIcon(("hungerBarLabel.icon.full")));
+                }
+                else {
+                    hungerBarLabelArray[i].setIcon(resourceMap.getIcon(("hungerBarLabel.icon.empty")));
+                }
+
+            }
+        }
+        
+        // If character runs out of time
+        // If character runs out of health
+        // If character runs out of hunger
+        // The episode ends
+        if(secondsRemaining == -1 || character.getHealth() == 0 || character.getHunger() == 0) {
+            gameTimer.stop();
+            
+            isFirstStart = true;
+            isGameStarted = false;
+            hasGameEnded = true;
+            
+            startButton.setText("Start");
+            resetButton.setEnabled(false);
+            
+            currentEpisode.SaveEpisode();
+        }
+        
+
     }
     
+    /**
+     * @return the character
+     */
+    public static GridCharacter getCharacter() {
+        return character;
+    }
+    
+    
 
+    /**
+     * @param aCharacter the character to set
+     */
+    public static void setCharacter(GridCharacter aCharacter) {
+        character = aCharacter;
+    }
 }

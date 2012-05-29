@@ -11,12 +11,23 @@ package samoojacitvenoucenje.GUI;
        
 public  class GridCharacter  {
 
-    private final int HEALTH_MAX = 100;
-    private final int HUNGER_MAX = 100;
+    public static final int HEALTH_MAX = 100;
+    public static final int HUNGER_MAX = 100;
     
     private int health = 0;
     private int hunger = 0;
     private int speed = 800;
+    private boolean isStopped = false;
+    public boolean hasHealthChanged = false;
+    public boolean hasHungerChanged = false;
+
+    public boolean isStopped() {
+        return isStopped;
+    }
+
+    public void setIsStopped(boolean isStopped) {
+        this.isStopped = isStopped;
+    }
 
     public GridCharacter() {
         health = HEALTH_MAX;

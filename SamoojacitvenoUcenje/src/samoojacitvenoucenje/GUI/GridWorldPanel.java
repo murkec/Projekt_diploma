@@ -4,9 +4,12 @@
  */
 package samoojacitvenoucenje.GUI;
 
+import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.Border;
@@ -33,7 +36,10 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import samoojacitvenoucenje.SamoojacitvenoUcenjeView;
 import java.io.FileReader;
+import java.net.URL;
 import javax.swing.border.LineBorder;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import samoojacitvenoucenje.episode.Episode;
 
 
 /**
@@ -52,14 +58,16 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
     private int characterIndexPosition = 0;
     
     private int[][] gridWorldMatrix;
+    private String selectedGridWorld = "";
+    
+    
 
     
     public void changeCharacterPosition(int position) {     
         GridWorldCell character = (GridWorldCell)this.getComponent(characterIndexPosition);
         int x = 0;
         int y = 0;
-            
-
+        
         if(position == 0) {         // UP
             y = -1;
         } else if(position == 1) {  // RIGHT
@@ -77,6 +85,7 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
             
             // reset current image icon
             character.setIcon(null);
+            character.setCellValue(0);
             // get nextPosition component
             GridWorldCell moveCharacter = (GridWorldCell)this.getComponent(characterIndexPosition);                  
             // interaction
@@ -97,6 +106,7 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
                   
             // reset current image icon
             character.setIcon(null);
+            character.setCellValue(0);
             // get nextPosition component
             GridWorldCell moveCharacter = (GridWorldCell)this.getComponent(characterIndexPosition);
             // interaction
@@ -111,44 +121,69 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
     }
     
     private void characterInteractWithEnvironment(int nextCellValue) {
-        GridCharacter character = SamoojacitvenoUcenjeView.getCharacter();
-        
-        switch(nextCellValue)
-        {
-            case 0: // Empty
-                break;
-            case 10: // Health
-                character.addHealth(10);
-                break;
-            case 11: // Food
-                character.addHunger(15);
-                break;
-            case 12: // Time
-                break;
-            case 13: // Wall
-                break;
-            case 14: // Bomb
-                character.removeHealth(15);
-                break;
-            case 15: // Water
-                character.addHunger(10);
-                break;
-            case 16: // Fire
-                character.removeHealth(10);
-                break;
-            case 17: // Mushroom
-                character.setSpeed(1500);
-                break;                          
-            case 18: // Chili
-                break;
-            case 19: // Beer
-                character.setSpeed(1000);
-                break;   
-            case 20: // Poison
-                break;
-        }
-        
-        SamoojacitvenoUcenjeView.setCharacter(character);
+            GridCharacter character = SamoojacitvenoUcenjeView.getCharacter();
+            Episode episode = SamoojacitvenoUcenjeView.getCurrentEpisode();
+            
+            switch(nextCellValue)
+            {
+                case 0: // Empty
+                    break;
+                case 10: // Health
+                    character.addHealth(50);
+                    character.hasHealthChanged = true;
+                    episode.addEpisodeValue(50);
+                    break;
+                case 11: // Food
+                    character.addHunger(25);
+                    character.hasHungerChanged = true;
+                    episode.addEpisodeValue(25);
+                    break;
+                case 12: // Time
+                    SamoojacitvenoUcenjeView.addSecondsRemaining(30);
+                    break;
+                case 13: // Wall
+                    character.setIsStopped(true);
+                    break;
+                case 14: // Bomb
+                    new AePlayWave(resourceMap.getString("bomb.sound")).start();
+                    character.removeHealth(20);
+                    character.hasHealthChanged = true;
+                    episode.removeEpisodeValue(20);
+                    break;
+                case 15: // Water
+                    character.addHunger(10);
+                    character.hasHungerChanged = true;
+                    episode.addEpisodeValue(10);
+                    break;
+                case 16: // Fire
+                    character.removeHealth(30);
+                    character.hasHealthChanged = true;
+                    episode.removeEpisodeValue(30);
+                    break;
+                case 17: // Mushroom
+                    character.removeHunger(5);
+                    character.hasHungerChanged = true;
+                    episode.removeEpisodeValue(5);
+                    break;                          
+                case 18: // Chili
+                    character.addHunger(5);
+                    character.hasHungerChanged = true;
+                    episode.addEpisodeValue(5);
+                    break;
+                case 19: // Beer
+                    character.addHealth(15);
+                    character.hasHealthChanged = true;
+                    episode.addEpisodeValue(15);
+                    break;   
+                case 20: // Poison
+                    character.removeHunger(10);
+                    character.hasHungerChanged = true;
+                    episode.removeEpisodeValue(10);
+                    break;
+            }
+            
+            SamoojacitvenoUcenjeView.setCharacter(character);
+
     }
     
     //<editor-fold defaultstate="collapsed" desc="no vertical and horizontal gap fill">
@@ -202,7 +237,9 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
 
     
     public void changeGridWorld(String worldFilename) {  
-        this.setOpaque(false);  
+        this.setOpaque(false);
+        
+        selectedGridWorld = worldFilename;
         
         FileReader fr = null;
         try {
@@ -217,8 +254,7 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
             
             //while((character = br.read()))
             while((row = br.readLine()) != null)
-            {
-                
+            {    
                 String[] cell = row.split(" ");
                 for (int i = 0; i < cell.length; i++) {
                     System.out.println(cell[i]);
@@ -306,20 +342,8 @@ public class GridWorldPanel extends JPanel implements DragGestureListener {
         }
     }
     
-    public void resetGridWorld() {
-        
-        //this.setOpaque(true);
-        //this.setBackground(new Color(240, 240, 240));
-
-        /*
-        int count = this.getComponentCount();
-        GridWorldCell gwc;
-        for (int i = 0; i < count; i++) {
-            gwc = (GridWorldCell)this.getComponent(i);
-            gwc.setIcon(null);
-       }
-       */
-                      
+    public void resetGridWorld() {       
+        changeGridWorld(selectedGridWorld);       
     }
     
     
