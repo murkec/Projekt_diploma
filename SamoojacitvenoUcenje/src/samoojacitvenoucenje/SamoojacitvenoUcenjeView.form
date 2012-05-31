@@ -105,10 +105,26 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="resetButton" pref="148" max="32767" attributes="1"/>
-                      <Component id="startButton" alignment="0" min="-2" pref="148" max="-2" attributes="1"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="resetButton" alignment="0" min="-2" pref="157" max="-2" attributes="1"/>
+                              <Component id="startButton" alignment="0" min="-2" pref="157" max="-2" attributes="1"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="405" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="lastEpisodeLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="lastEpisodeValueLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="allEpisodesLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="allEpisodesValueLabel" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="414" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="405" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -171,6 +187,16 @@
                           <Component id="startButton" min="-2" pref="42" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="resetButton" min="-2" pref="41" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="allEpisodesLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="allEpisodesValueLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="lastEpisodeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lastEpisodeValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <Component id="toolbarPanel" alignment="0" min="-2" max="-2" attributes="1"/>
                       <Component id="gridWorldPanel" min="-2" max="-2" attributes="1"/>
@@ -688,6 +714,34 @@
             <Property name="name" type="java.lang.String" value="timeBarLabel" noResource="true"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JLabel" name="lastEpisodeLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" resourceKey="lastEpisodeLabel.font"/>
+            <Property name="text" type="java.lang.String" resourceKey="lastEpisodeLabel.text"/>
+            <Property name="name" type="java.lang.String" value="lastEpisodeLabel" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lastEpisodeValueLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" resourceKey="lastEpisodeLabel.font"/>
+            <Property name="text" type="java.lang.String" resourceKey="lastEpisodeValueLabel.text"/>
+            <Property name="name" type="java.lang.String" value="lastEpisodeValueLabel" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="allEpisodesLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" resourceKey="allEpisodesLabel.font"/>
+            <Property name="text" type="java.lang.String" resourceKey="allEpisodesLabel.text"/>
+            <Property name="name" type="java.lang.String" value="allEpisodesLabel" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="allEpisodesValueLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" resourceKey="allEpisodesValueLabel.font"/>
+            <Property name="text" type="java.lang.String" resourceKey="allEpisodesValueLabel.text"/>
+            <Property name="name" type="java.lang.String" value="allEpisodesValueLabel" noResource="true"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JMenuBar" name="menuBar">
@@ -778,11 +832,11 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="statusPanelSeparator" alignment="0" pref="1578" max="32767" attributes="0"/>
+              <Component id="statusPanelSeparator" alignment="0" pref="1983" max="32767" attributes="0"/>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusMessageLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="1558" max="32767" attributes="0"/>
+                  <EmptySpace pref="1963" max="32767" attributes="0"/>
                   <Component id="statusAnimationLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -855,6 +909,6 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,63,0,0,6,42"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,63,0,0,7,-65"/>
   </AuxValues>
 </Form>

@@ -4,10 +4,6 @@
  */
 package samoojacitvenoucenje.GUI;
 
-/**
- *
- * @author Evgen
- */
 import java.io.File; 
 import java.io.IOException; 
 import javax.sound.sampled.AudioFormat; 
@@ -41,6 +37,7 @@ public class AePlayWave extends Thread {
         curPosition = p;
     } 
  
+    @Override
     public void run() { 
  
         File soundFile = new File(filename);
@@ -53,10 +50,8 @@ public class AePlayWave extends Thread {
         try { 
             audioInputStream = AudioSystem.getAudioInputStream(soundFile);
         } catch (UnsupportedAudioFileException e1) { 
-            e1.printStackTrace();
             return;
         } catch (IOException e1) { 
-            e1.printStackTrace();
             return;
         } 
  
@@ -68,10 +63,8 @@ public class AePlayWave extends Thread {
             auline = (SourceDataLine) AudioSystem.getLine(info);
             auline.open(format);
         } catch (LineUnavailableException e) { 
-            e.printStackTrace();
             return;
         } catch (Exception e) { 
-            e.printStackTrace();
             return;
         } 
  
@@ -95,7 +88,6 @@ public class AePlayWave extends Thread {
                     auline.write(abData, 0, nBytesRead);
             } 
         } catch (IOException e) { 
-            e.printStackTrace();
             return;
         } finally { 
             auline.drain();

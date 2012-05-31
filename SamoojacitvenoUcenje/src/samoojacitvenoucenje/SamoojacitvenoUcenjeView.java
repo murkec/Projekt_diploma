@@ -167,18 +167,16 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         mainPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         
-        // DEBUGGING
-        int width = gridWorldPanel.getWidth();
-        int height = gridWorldPanel.getHeight();
-        
-        /*
-        int cellx = 0;
-        int celly = 5;
-        GridWorldCell gwc = (GridWorldCell)gridWorldPanel.getComponentAt(cellx, celly);
-        gwc.setOpaque(true);
-        gwc.setBackground(Color.red);
-        */
-
+        // show value of last episode
+        Episode tempEpisode = new Episode();
+        int lastEpisodeValue = tempEpisode.GetFirstEpisodeValue();         
+        if(lastEpisodeValue == -1) {
+            lastEpisodeValueLabel.setText("Ni še vrednosti.");
+        }
+        else {
+            lastEpisodeValueLabel.setText(String.valueOf(lastEpisodeValue));
+            allEpisodesValueLabel.setText(String.valueOf(tempEpisode.GetAllEpisodesValue()));
+        }
 
     }
 
@@ -302,6 +300,10 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         hungerBarLabel19 = new javax.swing.JLabel();
         hungerBarLabel20 = new javax.swing.JLabel();
         timeBarLabel = new javax.swing.JLabel();
+        lastEpisodeLabel = new javax.swing.JLabel();
+        lastEpisodeValueLabel = new javax.swing.JLabel();
+        allEpisodesLabel = new javax.swing.JLabel();
+        allEpisodesValueLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -599,6 +601,22 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         timeBarLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         timeBarLabel.setName("timeBarLabel"); // NOI18N
 
+        lastEpisodeLabel.setFont(resourceMap.getFont("lastEpisodeLabel.font")); // NOI18N
+        lastEpisodeLabel.setText(resourceMap.getString("lastEpisodeLabel.text")); // NOI18N
+        lastEpisodeLabel.setName("lastEpisodeLabel"); // NOI18N
+
+        lastEpisodeValueLabel.setFont(resourceMap.getFont("lastEpisodeLabel.font")); // NOI18N
+        lastEpisodeValueLabel.setText(resourceMap.getString("lastEpisodeValueLabel.text")); // NOI18N
+        lastEpisodeValueLabel.setName("lastEpisodeValueLabel"); // NOI18N
+
+        allEpisodesLabel.setFont(resourceMap.getFont("allEpisodesLabel.font")); // NOI18N
+        allEpisodesLabel.setText(resourceMap.getString("allEpisodesLabel.text")); // NOI18N
+        allEpisodesLabel.setName("allEpisodesLabel"); // NOI18N
+
+        allEpisodesValueLabel.setFont(resourceMap.getFont("allEpisodesValueLabel.font")); // NOI18N
+        allEpisodesValueLabel.setText(resourceMap.getString("allEpisodesValueLabel.text")); // NOI18N
+        allEpisodesValueLabel.setName("allEpisodesValueLabel"); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -693,9 +711,21 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
                     .addComponent(gridWorldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                    .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(414, 414, 414))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(resetButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(startButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(405, 405, 405))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(lastEpisodeLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lastEpisodeValueLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(allEpisodesLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(allEpisodesValueLabel)))
+                .addGap(405, 405, 405))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -751,7 +781,15 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(85, 85, 85)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(allEpisodesLabel)
+                            .addComponent(allEpisodesValueLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lastEpisodeLabel)
+                            .addComponent(lastEpisodeValueLabel)))
                     .addComponent(toolbarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gridWorldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(117, Short.MAX_VALUE))
@@ -803,11 +841,11 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 1578, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 1983, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1558, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1963, Short.MAX_VALUE)
                 .addComponent(statusAnimationLabel)
                 .addContainerGap())
         );
@@ -847,6 +885,7 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
                 characterLabel = new GridWorldCell(resourceMap.getIcon("charaterLabel.icon"));
 
                 isFirstStart = false;
+               
             }
 
             gameTimer.start();
@@ -888,6 +927,8 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     }//GEN-LAST:event_resetButtonMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel allEpisodesLabel;
+    private javax.swing.JLabel allEpisodesValueLabel;
     private javax.swing.JLabel beerLabel;
     private javax.swing.JLabel bombLabel;
     private javax.swing.JLabel chiliLabel;
@@ -936,6 +977,8 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
     private javax.swing.JLabel hungerBarLabel7;
     private javax.swing.JLabel hungerBarLabel8;
     private javax.swing.JLabel hungerBarLabel9;
+    private javax.swing.JLabel lastEpisodeLabel;
+    private javax.swing.JLabel lastEpisodeValueLabel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JLabel mushroomLabel;
@@ -1052,6 +1095,8 @@ public class SamoojacitvenoUcenjeView extends FrameView implements DragGestureLi
             resetButton.setEnabled(false);
             
             currentEpisode.SaveEpisode();
+            lastEpisodeValueLabel.setText(String.valueOf(currentEpisode.GetFirstEpisodeValue()));
+            allEpisodesValueLabel.setText(String.valueOf(currentEpisode.GetAllEpisodesValue()));
         }
         
 

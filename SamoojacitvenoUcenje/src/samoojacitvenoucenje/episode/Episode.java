@@ -4,6 +4,8 @@
  */
 package samoojacitvenoucenje.episode;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -50,6 +52,48 @@ public class Episode {
         } catch (IOException ex) {
             Logger.getLogger(Episode.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public int GetFirstEpisodeValue() {
+        int result = -1;
+        
+        try {
+            FileReader fileReader = new FileReader(resourceMap.getString("episode.path"));
+            BufferedReader buffer = new BufferedReader(fileReader);
+           
+            result = Integer.parseInt(buffer.readLine());
+            buffer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Episode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return result;
+    }
+    
+    public double GetAllEpisodesValue() {
+        double result = -1;
+        
+        try {
+            FileReader fileReader = new FileReader(resourceMap.getString("episode.path"));
+            BufferedReader buffer = new BufferedReader(fileReader);
+           
+            int countEpisodes = 0;
+            double wholeSum = 0;
+            
+            String currEpisode = "";
+            while((currEpisode = buffer.readLine()) != null)
+            {
+                wholeSum += Integer.parseInt(currEpisode);
+                countEpisodes++;
+            }
+            
+            result = wholeSum / (double)countEpisodes;
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Episode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return result;    
     }
     
     
